@@ -3,6 +3,7 @@ package com.example.foodorderapp.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -36,9 +37,24 @@ public class MainActivity extends AppCompatActivity {
         // Load username from SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         String username = sharedPreferences.getString("username", "Guest"); // Mặc định là "Guest"
-
+        String userRole = sharedPreferences.getString("userRole", "Customer");
         // Lấy header view của NavigationView
         navigationView = findViewById(R.id.navigationView);
+
+        Menu menu = navigationView.getMenu();
+
+        // Ẩn tất cả mục menu liên quan đến Staff/Admin nếu user không phải Staff
+        if (!userRole.equals("Staff") && !userRole.equals("Admin")) {
+            menu.findItem(R.id.nav_dish_management).setVisible(false);
+            menu.findItem(R.id.nav_menu_management).setVisible(false);
+            menu.findItem(R.id.nav_new_orders).setVisible(false);
+            menu.findItem(R.id.nav_revenue_stats).setVisible(false);
+        }
+
+        // Nếu user là Customer, có thể ẩn các mục khác nếu cần
+        if (userRole.equals("Customer")) {
+            menu.findItem(R.id.nav_settings).setVisible(false); // Ví dụ: Ẩn Settings cho Customer
+        }
         headerView = navigationView.getHeaderView(0);
 
         // Tìm TextView trong header và cập nhật tên
