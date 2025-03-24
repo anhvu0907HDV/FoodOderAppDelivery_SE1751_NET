@@ -3,6 +3,7 @@ package com.example.foodorderapp.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,19 +18,31 @@ import com.example.foodorderapp.R;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public class UserProfileActivity extends AppCompatActivity {
+public class UserProfileActivity extends BaseActivity {
     private TextView userName, userEmail, userPhone, userRole, userStatus, userCreatedAt, userUpdatedAt;
     private ImageView userAvatar;
     private Button btnEditProfile, btnLogout;
 
     private UserRoomDatabase userRoomDatabase;
     private User currentUser;
-
+    // Xử lý sự kiện khi bấm nút back
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish(); // Quay lại Activity trước đó
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
-
+        // Hiển thị nút back trên ActionBar
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
         // Ánh xạ View
         userAvatar = findViewById(R.id.userAvatar);
         userName = findViewById(R.id.userName);
@@ -64,12 +77,24 @@ public class UserProfileActivity extends AppCompatActivity {
             finish();
         });
 
-        // Sự kiện khi nhấn vào nút Chỉnh sửa hồ sơ (Chưa triển khai)
-        btnEditProfile.setOnClickListener(view ->
-                Toast.makeText(UserProfileActivity.this, "Edit Profile Clicked", Toast.LENGTH_SHORT).show()
-        );
+        btnEditProfile.setOnClickListener(view -> {
+            Intent intent = new Intent(UserProfileActivity.this, EditProfileActivity.class);
+            startActivity(intent);
+        });
     }
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        new Thread(() -> {
+            String loggedInEmail = getSharedPreferences("UserPrefs", MODE_PRIVATE).getString("username", null);
+            if (loggedInEmail != null) {
+                currentUser = userRoomDatabase.userDao().getUserByEmail(loggedInEmail);
+                if (currentUser != null) {
+                    runOnUiThread(() -> updateUI(currentUser));
+                }
+            }
+        }).start();
+    }
     // Cập nhật giao diện với dữ liệu từ Database
     private void updateUI(User user) {
         userName.setText(user.getUsername());

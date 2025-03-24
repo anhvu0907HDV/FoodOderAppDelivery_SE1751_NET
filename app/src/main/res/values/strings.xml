@@ -17,4 +17,6 @@
     <string name="price_label">Giá: %1$,.0f VNĐ</string>
     <string name="no_order_found">Không tìm thấy đơn hàng nào</string>
     <string name="no_order_item_found">Không tìm thấy sản phẩm nào trong đơn hàng</string>
+    <string name="header_edit_profile">Edit Profile</string>
+    <string name="header_user_profile">My Profile</string>
 </resources>

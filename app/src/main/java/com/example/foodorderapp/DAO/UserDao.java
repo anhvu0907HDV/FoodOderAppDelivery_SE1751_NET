@@ -13,6 +13,7 @@ import java.util.List;
 
 @Dao
 public interface UserDao {
+
     @Query("SELECT * FROM user_table")
     List<User> getAllUsers();
 
@@ -49,4 +50,6 @@ public interface UserDao {
     // update all users
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateAllUsers(List<User> users);
+    @Update
+    void updateUser(User user);
 }

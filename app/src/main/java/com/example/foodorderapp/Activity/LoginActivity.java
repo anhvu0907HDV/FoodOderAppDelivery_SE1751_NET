@@ -26,27 +26,44 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void setVariable() {
+        binding.signupBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this, SignupActivity.class));
+            }
+        });
         binding.loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email = binding.userEdt.getText().toString();
-                String pass = binding.passEdt.getText().toString();
-                if (!email.isEmpty() && !pass.isEmpty()) {
-                    User user = userRoomDatabase.userDao().getUserByEmail(email);
-                    if (user != null && user.getPassword().equals(pass)) {
+                String email = binding.userEdt.getText().toString().trim();
+                String pass = binding.passEdt.getText().toString().trim();
 
-                        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("username", email);
-                        editor.apply();
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
-
-                    } else {
-                        Toast.makeText(LoginActivity.this, "Invalid email or password", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(LoginActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+                if (email.isEmpty() || pass.isEmpty()) {
+                    Toast.makeText(LoginActivity.this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+                    return;
                 }
+
+                // Lấy user từ database
+                User user = userRoomDatabase.userDao().getUserByEmail(email);
+                if (user == null || !user.getPassword().equals(pass)) {
+                    Toast.makeText(LoginActivity.this, "Email hoặc mật khẩu không đúng", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Lưu thông tin đăng nhập vào SharedPreferences
+                SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("username", email);
+                editor.putString("userRole", user.getRole()); // Giả sử User có method getRole()
+                editor.apply();
+
+                // Điều hướng theo role
+                if (user.getRole().equals("Admin")) {
+                    /*startActivity(new Intent(LoginActivity.this, AdminActivity.class));*/
+                } else {
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                }
+                finish();
             }
         });
     }

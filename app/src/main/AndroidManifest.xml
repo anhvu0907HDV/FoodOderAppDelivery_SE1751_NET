@@ -10,11 +10,17 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
+        android:theme="@style/Theme.MyApp"
         tools:targetApi="31">
-
         <activity
+            android:label="@string/header_edit_profile"
+            android:theme="@style/Theme.MyApp.ActionBar"
+            android:name=".Activity.EditProfileActivity"
+            android:exported="false" />
+        <activity
+            android:label="@string/header_user_profile"
             android:name=".Activity.UserProfileActivity"
+            android:theme="@style/Theme.MyApp.ActionBar"
             android:exported="false" />
         <activity
             android:name=".Activity.LogoutActivity"
@@ -29,20 +35,22 @@
             android:name=".Activity.SignupActivity"
             android:exported="false" />
         <activity
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:name=".Activity.LoginActivity"
             android:exported="false" />
         <activity
             android:name=".Activity.BaseActivity"
             android:exported="false" />
         <activity
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:name=".Activity.IntroActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".Activity.DishManagementActivity"
             android:exported="false" />
